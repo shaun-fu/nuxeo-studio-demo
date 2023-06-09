@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.chains.contract.approved.notice" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent" point="chains">
+        <chain id="ch_contract_approved_notice">
+            <operation id="Context.FetchDocument"/>
+            <operation id="Notification.SendContractApprovedNotification">
+                <param type="string" name="to">user:shaun</param>
+            </operation>
+        </chain>
+    </extension>
+</component>

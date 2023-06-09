@@ -1,0 +1,20 @@
+## Edit this file to customize your configuration ##
+#demo-package.target=
+
+# Set list of templates to include, comma separated values.
+nuxeo.template.includes=common
+
+# org.nuxeo.ecm.instance.description=Nuxeo ECM customized with Demo Package
+
+org.nuxeo.ecm.product.name=Nuxeo Studio Demo
+org.nuxeo.ecm.product.version=1.0
+
+# Email config
+nuxeo.notification.eMailSubjectPrefix="[Nuxeo]"
+mail.transport.host=smtp.163.com
+#mail.transport.port=
+mail.transport.auth=true
+mail.transport.user=isoftstone450
+mail.transport.password=POUSCNOJXQPVRJIA
+mail.from=isoftstone450@163.com
+mail.transport.usetls=true

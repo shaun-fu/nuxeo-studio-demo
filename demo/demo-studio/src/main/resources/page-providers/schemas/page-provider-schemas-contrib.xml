@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.page.provider.schemas" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.core.schema.TypeService" point="schema">
+        <schema name="contract-search-pp" prefix="csp" override="true"
+                src="page-providers/schemas/contract-search-pp.xsd"/>
+    </extension>
+</component>

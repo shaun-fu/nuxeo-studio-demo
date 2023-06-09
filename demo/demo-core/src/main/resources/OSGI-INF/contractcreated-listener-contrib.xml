@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<component name="com.iss.demomgmt.listener.listener.contractcreated">
+
+  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+    <listener name="contractcreated"
+      class="com.iss.demomgmt.listener.ContractCreated">
+        <event>documentCreated</event>
+    </listener>
+  </extension>
+
+</component>

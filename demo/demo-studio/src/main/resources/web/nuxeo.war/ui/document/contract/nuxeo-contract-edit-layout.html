@@ -1,0 +1,58 @@
+<link rel="import" href="../../elements/iss-directory-suggestion.html">
+<dom-module id="nuxeo-contract-edit-layout">
+    <template>
+        <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+
+        </style>
+        <nuxeo-input role="widget" role="widget" label="[[i18n(&#x27;title&#x27;)]]" name="title"
+                     value="{{document.properties.dc:title}}" autofocus=""></nuxeo-input>
+
+        <nuxeo-textarea role="widget" role="widget" label="[[i18n(&#x27;label.description&#x27;)]]" name="description"
+                        value="{{document.properties.dc:description}}"></nuxeo-textarea>
+
+        <nuxeo-user-suggestion value="{{document.properties.ct:owner}}" label="[[i18n(&#x27;label.owner&#x27;)]]"
+                               search-type="USER_GROUP_TYPE" min-chars="0" role="widget"></nuxeo-user-suggestion>
+
+        <nuxeo-directory-suggestion role="widget" value="{{document.properties.ct:type}}"
+                                    label="[[i18n(&#x27;label.contractType&#x27;)]]" directory-name="contractType"
+                                    min-chars="0"></nuxeo-directory-suggestion>
+
+        <iss-directory-suggestion role="widget" value="{{document.properties.ct:department}}"
+                                    label="Department" can-select-parent=""
+                                    directory-name="kms_department" min-chars="0"></iss-directory-suggestion>
+        <div>
+            <table style="width: 100%;">
+                <td>
+                    <nuxeo-date-picker role="widget" value="{{document.properties.ct:signatureDate}}"
+                                       label="[[i18n(&#x27;label.signatureDate&#x27;)]]"></nuxeo-date-picker>
+                </td>
+                <td>
+                    <nuxeo-date-picker role="widget" value="{{document.properties.ct:startDate}}"
+                                       label="[[i18n(&#x27;label.startDate&#x27;)]]"></nuxeo-date-picker>
+                </td>
+                <td>
+                    <nuxeo-date-picker role="widget" label="[[i18n(&#x27;label.expirationDate&#x27;)]]" name="expired"
+                                       value="{{document.properties.ct:expirationDate}}"></nuxeo-date-picker>
+                </td>
+            </table>
+        </div>
+    </template>
+
+    <script>
+    Polymer({
+      is: 'nuxeo-contract-edit-layout',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        document: {
+          type: Object,
+        },
+
+      }
+    });
+
+    </script>
+</dom-module>

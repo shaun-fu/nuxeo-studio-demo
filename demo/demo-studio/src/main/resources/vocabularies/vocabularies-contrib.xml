@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.vocabularies" version="1.0.0">
+  <require>demo.studio.default.user.group.schema</require>
+  <!-- template definitions for kmsxvocabularies -->
+  <extension target="org.nuxeo.ecm.directory.GenericDirectory" point="directories">
+    <directory name="template-kmsxvocabulary" template="true" extends="template-directory">
+      <schema>kmsxvocabulary</schema>
+      <idField>id</idField>
+    </directory>
+
+  </extension>
+
+
+  <extension target="org.nuxeo.ecm.directory.GenericDirectory" point="directories">
+    <directory name="companySize" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+      <table>studio_vocabulary_companySize</table>
+      <dataFile>vocabularies/companySize.csv</dataFile>
+      <cacheEntryName>vocab-companySize-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-companySize-cache-without-references
+      </cacheEntryWithoutReferencesName>
+    </directory>
+    <directory name="contractType" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+      <table>studio_vocabulary_contractType</table>
+      <dataFile>vocabularies/contractType.csv</dataFile>
+      <cacheEntryName>vocab-contractType-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-contractType-cache-without-references
+      </cacheEntryWithoutReferencesName>
+    </directory>
+    <directory name="industry" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+      <table>studio_vocabulary_industry</table>
+      <dataFile>vocabularies/industry.csv</dataFile>
+      <cacheEntryName>vocab-industry-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-industry-cache-without-references
+      </cacheEntryWithoutReferencesName>
+    </directory>
+
+    <directory name="kms_department" extends="template-kmsxvocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+      <table>studio_vocabulary_kms_department</table>
+      <dataFile>vocabularies/kms_department.csv</dataFile>
+      <parentDirectory>kms_department</parentDirectory>
+      <cacheEntryName>vocab-kms_department-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-kms_department-cache-without-references</cacheEntryWithoutReferencesName>
+      <deleteConstraint class="org.nuxeo.ecm.directory.HierarchicalDirectoryDeleteConstraint">
+        <property name="targetDirectory">kms_department</property>
+        <property name="targetDirectoryField">parent</property>
+      </deleteConstraint>
+      <references>
+        <reference field="users" directory="userDirectory" name="user2departments" source="departmentId" target="userId"
+                   dataFile="usergroups/user2department.csv"/>
+      </references>
+    </directory>
+    <directory name="kms_group_type" extends="template-vocabulary">
+      <autoincrementIdField>false</autoincrementIdField>
+      <createTablePolicy>on_missing_columns</createTablePolicy>
+      <table>studio_vocabulary_kms_group_type</table>
+      <dataFile>vocabularies/kms_group_type.csv</dataFile>
+      <cacheEntryName>vocab-kms_group_type-cache</cacheEntryName>
+      <cacheEntryWithoutReferencesName>vocab-kms_group_type-cache-without-references</cacheEntryWithoutReferencesName>
+    </directory>
+
+
+  </extension>
+  <extension target="org.nuxeo.ecm.core.cache.CacheService" point="caches">
+    <cache name="vocab-companySize-cache">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-companySize-cache-without-references">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-contractType-cache">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-contractType-cache-without-references">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-industry-cache">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-industry-cache-without-references">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-kms_department-cache">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-kms_department-cache-without-references">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-kms_group_type-cache">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+    <cache name="vocab-kms_group_type-cache-without-references">
+      <option name="maxSize">1000</option>
+      <option name="concurrencyLevel">500</option>
+      <ttl>60</ttl>
+    </cache>
+
+
+  </extension>
+
+
+</component>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.workflow.sample.filter" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="filters">
+        <filter id="filter@wf@SampleWorkflow">
+            <rule grant="true">
+                <permission>Read</permission>
+                <type>Contract</type>
+            </rule>
+            <rule grant="false">
+                <condition>document.currentLifeCycleState != "draft"</condition>
+            </rule>
+        </filter>
+    </extension>
+
+</component>

@@ -1,0 +1,384 @@
+<link rel="import" href="iss-directory-suggestion.html">
+<dom-module id="iss-create-group">
+    <template>
+        <style include="iron-flex">
+      :host {
+        display: block;
+      }
+
+      .header {
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        margin-bottom: 16px;
+      }
+
+      .header>iron-icon {
+        padding: 8px;
+      }
+
+      .row {
+        font-size: 0.8rem;
+        border: 1px solid var(--nuxeo-border, #aaa);
+        @apply --layout-horizontal;
+        @apply --layout-center;
+      }
+
+      .row .label {
+        font-weight: 400;
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        @apply --layout-flex;
+      }
+
+      .row .label iron-icon {
+        margin: 0 8px;
+      }
+
+      .row .name {
+        @apply --layout-flex;
+      }
+
+      .row .email {
+        @apply --layout-flex;
+      }
+
+      .form-buttons {
+        margin-top: 16px;
+      }
+
+      #errors {
+        color: red;
+        margin: 1em 0;
+      }
+
+      /* buttons */
+      paper-button.primary {
+        background-color: var(--nuxeo-button-primary, #00adff);
+        color: #fff;
+      }
+
+      paper-button.primary:hover,
+      paper-button.primary:focus {
+        background-color: var(--nuxeo-button-primary-focus, #0079b3);
+        font-weight: inherit;
+        color: #fff !important;
+      }
+    </style>
+
+        <nuxeo-connection user="{{_currentUser}}"></nuxeo-connection>
+        <nuxeo-resource id="request" path="/group"></nuxeo-resource>
+        <nuxeo-operation id="userGroups" op="Group.UpdateParentGroups"></nuxeo-operation>
+
+        <div class="header">
+            <iron-icon icon="nuxeo:group"></iron-icon>
+            <h3>[[i18n('createGroup.heading')]]</h3>
+        </div>
+
+        <iron-form id="form">
+            <form>
+
+                <nuxeo-input id="groupName" label="[[i18n('createGroup.group.name')]]" value="{{groupName}}" required="">
+                </nuxeo-input>
+                <nuxeo-input id="groupLabel" label="[[i18n('createGroup.group.label')]]" value="{{groupLabel}}"></nuxeo-input>
+
+                <iss-directory-suggestion value="{{department}}" label="[[i18n('editUser.department')]]" required
+                                          can-select-parent="" on-selected-item-changed="_departmentChanged" directory-name="kms_department"
+                                          min-chars="0"></iss-directory-suggestion>
+
+                <nuxeo-directory-suggestion id="groupType" value="{{groupType}}" label="[[i18n('editGroup.groupType')]]"
+                                            directory-name="kms_group_type" min-chars="0" required query-results-filter="[[queryResultsFilter]]">
+                </nuxeo-directory-suggestion>
+
+                <!-- <nuxeo-user-suggestion id="picker" label="[[i18n('createGroup.members')]]" search-type="USER_GROUP_TYPE"
+                                                       placeholder="[[i18n('createGroup.search.placeholder')]]" selected-item="{{selectedUser}}"
+                                                       result-formatter="[[resultFormatter]]" query-results-filter="[[resultsFilter]]">
+                                </nuxeo-user-suggestion> -->
+
+                <dom-repeat items="[[selectedUsers]]">
+                    <template>
+                        <div class="row">
+                            <div class="label">
+                                <iron-icon icon="nuxeo:user" hidden="[[item.groupname]]"></iron-icon>
+                                <iron-icon icon="nuxeo:group" hidden="[[item.username]]"></iron-icon>
+                                <span>[[item.displayLabel]]</span>
+                            </div>
+                            <div class="name">
+                                <span hidden="[[item.groupname]]">[[item.username]]</span>
+                                <span hidden="[[item.username]]">[[item.groupname]]</span>
+                            </div>
+                            <div class="email">
+                                <span>[[item.email]]</span>
+                            </div>
+                            <paper-icon-button icon="nuxeo:remove" title="remove" on-click="_remove"></paper-icon-button>
+                        </div>
+                    </template>
+                </dom-repeat>
+
+                <div class="form-buttons">
+                    <paper-button noink="" id="cancelButton" on-click="_cancel">[[i18n('command.cancel')]]</paper-button>
+                    <paper-button noink="" id="createButton" class="primary" on-click="_submit">[[i18n('command.create')]]
+                    </paper-button>
+                    <paper-button noink="" id="createAnotherButton" class="primary" on-click="_submitAnother">
+                        [[i18n('createGroup.createAnother')]]</paper-button>
+                </div>
+
+                <span id="errors" hidden$="[[!_hasErrors(errors)]]">[[errors]]</span>
+
+            </form>
+        </iron-form>
+    </template>
+
+    <script>
+    Polymer({
+      is: 'iss-create-group',
+      behaviors: [Nuxeo.I18nBehavior, Nuxeo.FiltersBehavior],
+      properties: {
+        groupName: {
+          type: String,
+          notify: true,
+        },
+
+        groupLabel: {
+          type: String,
+          notify: true,
+        },
+
+        department: {
+          type: String,
+          notify: true,
+        },
+
+        groupType: {
+          type: String,
+          notify: true,
+        },
+
+        selectedUser: {
+          type: Object,
+          notify: true,
+        },
+
+        selectedUsers: {
+          type: Array,
+          value: [],
+          notify: true,
+        },
+
+        resultsFilter: {
+          type: Function,
+          value() {
+            return this._resultsFilter.bind(this);
+          },
+        },
+
+        resultFormatter: {
+          type: Function,
+          value() {
+            return this._resultFormatter.bind(this);
+          },
+        },
+
+        queryResultsFilter: {
+          type: Function,
+          value() {
+            return this._queryResultsFilter.bind(this);
+          },
+        },
+
+        errors: {
+          type: String,
+          value: '',
+        },
+
+        /**
+         * If true, allows to create a new group immediately after the current one is created
+         */
+        _createAnother: {
+          type: Boolean,
+          value: false,
+        },
+
+        _currentUser: {
+          type: Object,
+        },
+
+        childrenFilter: {
+          type: Function,
+          value() {
+            return this._childrenFilter.bind(this);
+          },
+        },
+
+        adminFilter: {
+          type: Function,
+          value() {
+            return this._adminFilter.bind(this);
+          },
+        },
+      },
+
+      observers: ['_observeSelectedUser(selectedUser)'],
+
+      _goHome() {
+        this.dispatchEvent(new CustomEvent('goHome', {
+          composed: true,
+          bubbles: true,
+        }));
+      },
+
+      _observeSelectedUser() {
+        if (this.selectedUser && this.selectedUsers.indexOf(this.selectedUser) === -1) {
+          this.push('selectedUsers', this.selectedUser);
+        }
+        this.selectedUser = null;
+      },
+
+      _remove(e) {
+        if (e.model.item) {
+          this.splice('selectedUsers', this.selectedUsers.indexOf(e.model.item), 1);
+        }
+      },
+
+      /**
+       * Submits the form with `_createAnother` option set to true.
+       */
+      _submitAnother() {
+        this._createAnother = true;
+        this.$.form.submit();
+      },
+
+      /**
+       * Submits the form.
+       */
+      _submit() {
+        this._createAnother = false;
+        this.$.form.submit();
+      },
+
+      /**
+       * Creates a new group if the form was successfully submitted.
+       */
+      _create() {
+        this.$.request.data = this._computeData();
+        this.$.request.post().then((response) => {
+          this.$.userGroups.params = {
+            groupname: this.groupName,
+            powerusers: this.groupType == "Admin"
+          };
+
+          this.$.userGroups.execute().then(response => {
+            console.log(response);
+          });
+
+          this.dispatchEvent(new CustomEvent('nuxeo-group-created', {
+            composed: true,
+            bubbles: true,
+            detail: response,
+          }));
+          this._resetFields();
+          if (!this._createAnother) {
+            this._goHome();
+          }
+        }).catch((error) => {
+          this.errors = error.message;
+        });
+      },
+
+      _cancel() {
+        this._resetFields();
+        this._goHome();
+      },
+
+      _resetFields() {
+        this.groupName = '';
+        this.groupLabel = '';
+        this.department = null;
+        this.groupType = null;
+        this.errors = '';
+        this.selectedUsers = [];
+      },
+
+      _computeData() {
+        var properties = {};
+        properties['groupname'] = this.groupName;
+        properties['grouplabel'] = this.grouplabel;
+        properties['department'] = this.department;
+        properties['groupType'] = this.groupType;
+
+        return {
+          'entity-type': 'group',
+          groupname: this.groupName,
+          grouplabel: this.groupLabel,
+          properties: properties,
+          memberUsers: this.selectedUsers.filter((record) => record.type === 'USER_TYPE')
+            .map((record) => record.username),
+          memberGroups: this.selectedUsers.filter((record) => record.type === 'GROUP_TYPE')
+            .map((record) => record.groupname),
+        };
+      },
+
+      _resultsFilter(entry) {
+        for (let i = 0; i < this.selectedUsers.length; i++) {
+          if (entry.id === this.selectedUsers[i].id) {
+            return false;
+          }
+        }
+        return true;
+      },
+
+      _resultFormatter(item) {
+        return `${item.displayLabel} (${item.groupname || item.username})`;
+      },
+
+      _hasErrors() {
+        return this.errors !== '';
+      },
+
+      ready() {
+        this.$.form.addEventListener('iron-form-presubmit', (event) => {
+          event.preventDefault();
+          this._create();
+        });
+      },
+
+      _departmentChanged(e, v) {
+        //console.log(e);
+        console.log(v);
+        console.log(this._currentUser);
+        if(!v.value) return;
+        if (!this.isMember(this._currentUser, "administrators")) {
+          // if belongs user's department, cannot select admin group type
+          if (this._currentUser.properties.departments.indexOf(v.value.computedId) > -1) {
+            this.$.groupType.queryResultsFilter = this.childrenFilter;
+          } else {
+            this.$.groupType.queryResultsFilter = this.adminFilter;
+          }
+          var select = this.$.groupType.$.s2;
+          // clear group type value
+          select._valueChanged();
+        }
+      },
+
+      _childrenFilter: function (e) {
+        //console.log(e);
+        return e.id != "Admin";
+      },
+
+      _adminFilter: function (e) {
+        //console.log(e);
+        return e.id == "Admin";
+      },
+
+      _queryResultsFilter: function (e) {
+        if (!this.isMember(this._currentUser, "administrators")) {
+          return false;
+        }
+        return true;
+      }
+
+    });
+
+
+
+  </script>
+</dom-module>

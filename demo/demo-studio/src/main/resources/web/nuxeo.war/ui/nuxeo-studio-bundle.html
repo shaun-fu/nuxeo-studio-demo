@@ -1,0 +1,69 @@
+<link rel="import" href="elements/iss-ziptree-export.html">
+<link rel="import" href="elements/iss-view-user.html">
+<link rel="import" href="elements/iss-edit-user.html">
+<link rel="import" href="elements/iss-create-group.html">
+<link rel="import" href="elements/iss-create-user.html">
+<link rel="import" href="elements/iss-group-management.html">
+<link rel="import" href="elements/iss-user-management.html">
+<link rel="import" href="elements/iss-user-group-management.html">
+<link rel="import" href="elements/iss-user-group-management-page.html">
+<link rel="import" href="elements/iss-vocabulary-management.html">
+
+<!-- set default search form page provider -->
+<nuxeo-slot-content name="defaultSearchMenuPage" slot="DRAWER_PAGES">
+    <template>
+        <nuxeo-search-form name="defaultSearch" search-name="contract-search" auto="" provider="contract-search"
+                           schemas="dublincore,common,uid,contract"></nuxeo-search-form>
+    </template>
+</nuxeo-slot-content>
+
+<!-- add document action for administrators to export ZIP tree -->
+<nuxeo-slot-content name="exportZIPTree" slot="DOCUMENT_ACTIONS" order="1000">
+    <template>
+        <nuxeo-filter document="[[document]]" facet="Folderish" group="administrators" user="[[user]]">
+            <template>
+                <iss-ziptree-export document="[[document]]">
+                </iss-ziptree-export>
+            </template>
+        </nuxeo-filter>
+    </template>
+</nuxeo-slot-content>
+
+<nuxeo-slot-content name="adminUserManagementPage" slot="ADMINISTRATION_PAGES">
+    <template>
+        <iss-user-group-management-page name="user-group-management" route="administration"
+                                        route-params="[[routeParams]]"></iss-user-group-management-page>
+    </template>
+</nuxeo-slot-content>
+
+<nuxeo-slot-content name="adminVocabManagementMenuItem" slot="ADMINISTRATION_MENU" order="30">
+    <template>
+        <nuxeo-filter user="[[user]]" expression="user.isAdministrator">
+            <template>
+                <nuxeo-menu-item name="vocabulary-management" label="vocabularyManagement.heading"
+                                 route="administration:vocabulary-management"></nuxeo-menu-item>
+            </template>
+        </nuxeo-filter>
+    </template>
+</nuxeo-slot-content>
+
+
+<nuxeo-slot-content name="adminNxqlSearchMenuItem" slot="ADMINISTRATION_MENU" order="60">
+    <template>
+        <nuxeo-filter user="[[user]]" expression="user.isAdministrator">
+            <template>
+                <nuxeo-menu-item label="nxqlSearch.heading" name="nxql" route="administration:nxql"></nuxeo-menu-item>
+            </template>
+        </nuxeo-filter>
+    </template>
+</nuxeo-slot-content>
+
+<!-- Custom code -->
+<script>
+    var app = document.querySelector('nuxeo-app');
+    var suggester = document.querySelector('nuxeo-app').root.querySelector('nuxeo-suggester');
+    var newSuggester = document.createElement('custom-suggester');
+    document.querySelector('nuxeo-app').root.querySelector('paper-drawer-panel').querySelector('paper-header-panel').replaceChild(newSuggester, suggester);
+
+
+</script> -->

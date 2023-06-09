@@ -1,0 +1,62 @@
+<dom-module id="nuxeo-sample-workflow-final-review-task-layout">
+    <template>
+        <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+
+
+        </style>
+        <div role="widget">
+            <label>[[i18n('label.task.variables.directive')]]</label>
+            <div name="directive">[[i18n(task.directive)]]</div>
+        </div>
+
+        <div role="widget">
+            <label>[[i18n('label.task.variables.created')]]</label>
+            <div>
+                <nuxeo-date datetime="[[i18n(task.created)]]" name="created"></nuxeo-date>
+            </div>
+        </div>
+
+        <!--        <nuxeo-data-table role="widget" items="{{task.variables.commentHistory}}" name="comments" empty-label="[[i18n('label.doctype.solution.noComment')]]">-->
+
+        <!--            <nuxeo-data-table-column name="[[i18n('label.doctype.solution.reviewComment')]]">-->
+        <!--                <template>-->
+        <!--                    [[item.text]]-->
+        <!--                </template>-->
+        <!--            </nuxeo-data-table-column>-->
+        <!--            <nuxeo-data-table-column name="[[i18n('label.task.variables.reviewCommentCreator')]]">-->
+        <!--                <template>-->
+        <!--                    [[item.creator.properties.firstName]]-->
+        <!--                </template>-->
+        <!--            </nuxeo-data-table-column>-->
+        <!--        </nuxeo-data-table>-->
+
+        <div role="widget">
+            <label>[[i18n('label.task.variables.comment')]]</label>
+            <div>
+                <nuxeo-input value="{{task.variables.comment}}" type="text" name="comment"></nuxeo-input>
+            </div>
+        </div>
+
+    </template>
+
+    <script>
+  Polymer({
+    is: 'nuxeo-sample-workflow-final-review-task-layout',
+    behaviors: [Nuxeo.LayoutBehavior],
+    properties: {
+      task: {
+        type: Object,
+      },
+
+      document: {
+        type: Object,
+      },
+    }
+  });
+
+
+    </script>
+</dom-module>

@@ -1,0 +1,141 @@
+<dom-module id="nuxeo-contract-search-search-results">
+    <template>
+        <style include="nuxeo-styles">
+      nuxeo-data-table,
+      nuxeo-data-grid,
+      nuxeo-data-list,
+      nuxeo-justified-grid {
+        display: block;
+        position: relative;
+        min-height: calc(100vh - 130px - var(--nuxeo-app-top));
+      }
+      nuxeo-justified-grid {
+        height: calc(100vh - 10em);
+      }
+
+
+
+
+
+        </style>
+        <nuxeo-results name="contract-search" nx-provider="[[nxProvider]]" selected-items="{{selectedItems}}"
+                       display-quick-filters="" display-sort="" sort-label="[[i18n('searchResults.sort.label')]]"
+                       sort-options="[[sortOptions]]">
+            <nuxeo-data-grid name="grid" icon="nuxeo:view-thumbnails" class="results"
+                             empty-label="[[i18n('searchResults.noResults')]]" selection-enabled="">
+                <template>
+                    <nuxeo-document-grid-thumbnail tabindex$="{{tabIndex}}" selected$="{{selected}}" doc="[[item]]"
+                                                   index="[[index]]" on-navigate="_navigate"
+                                                   selected-items="[[selectedItems]]">
+                    </nuxeo-document-grid-thumbnail>
+                </template>
+            </nuxeo-data-grid>
+
+            <nuxeo-data-table role="widget" class="results" empty-label="[[i18n('searchResults.noResults')]]"
+                              selection-enabled settings-enabled on-row-clicked="_navigate" icon="nuxeo:view-list"
+                              name="table">
+
+                <nuxeo-data-table-column name="[[i18n('label.doctype.contract.title')]]" field="dc:title"
+                                         sort-by="dc:title" flex="100">
+                    <template>
+                        <nuxeo-document-thumbnail document="[[item]]"></nuxeo-document-thumbnail>
+                        <a class="ellipsis" href$="[[urlFor('browse', item.path)]]"
+                           on-click="_navigate">[[item.title]]</a>
+                    </template>
+                </nuxeo-data-table-column>
+
+                <nuxeo-data-table-column name="[[i18n('label.doctype.type')]]" field="ecm:primaryType"
+                                         sort-by="ecm:primaryType" hidden>
+                    <template>
+                        <a class="ellipsis" href$="[[urlFor('browse', item.path)]]" on-click="_navigate">
+                            <nuxeo-tag>[[formatDocType(item.type)]]</nuxeo-tag>
+                        </a>
+                    </template>
+                </nuxeo-data-table-column>
+
+                <nuxeo-data-table-column name="[[i18n('label.doctype.contract.modified')]]" field="dc:modified"
+                                         sort-by="dc:modified" flex="50" hidden>
+                    <template>
+                        [[formatDate(item.properties.dc:modified)]]
+                    </template>
+                </nuxeo-data-table-column>
+
+                <nuxeo-data-table-column name="[[i18n('label.doctype.contract.state')]]" field="state"
+                                         sort-by="ecm:currentLifeCycleState" flex="50">
+                    <template>
+                        [[formatLifecycleState(item.state)]]
+                    </template>
+                </nuxeo-data-table-column>
+
+                <nuxeo-data-table-column name="[[i18n('label.owner')]]" field="ct:owner" sort-by="ct:owner" flex="50">
+                    <template>
+                        <nuxeo-user-tag user="[[item.properties.ct:owner]]">
+                        </nuxeo-user-tag>
+                    </template>
+                </nuxeo-data-table-column>
+
+                <nuxeo-data-table-column name="[[i18n('label.contractType')]]" field="ct:type" sort-by="ct:type"
+                                         flex="50">
+                    <template>
+                        [[formatDirectory(item.properties.ct:type)]]
+                    </template>
+                </nuxeo-data-table-column>
+
+                <nuxeo-data-table-column name="[[i18n('label.signatureDate')]]" field="ct:signatureDate"
+                                         sort-by="ct:signatureDate" flex="50" hidden>
+                    <template>
+                        [[formatDate(item.properties.ct:signatureDate)]]
+                    </template>
+                </nuxeo-data-table-column>
+
+                <nuxeo-data-table-column name="[[i18n('label.startDate')]]" field="ct:startDate" sort-by="ct:startDate"
+                                         flex="50" hidden>
+                    <template>
+                        [[formatDate(item.properties.ct:startDate)]]
+                    </template>
+                </nuxeo-data-table-column>
+
+                <nuxeo-data-table-column name="[[i18n('label.expirationDate')]]" field="ct:expirationDate"
+                                         sort-by="ct:expirationDate" flex="50" hidden>
+                    <template>
+                        [[formatDate(item.properties.ct:expirationDate)]]
+                    </template>
+                </nuxeo-data-table-column>
+
+            </nuxeo-data-table>
+
+        </nuxeo-results>
+    </template>
+    <script>
+    Polymer({
+      is: 'nuxeo-contract-search-search-results',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+        nxProvider: Object,
+        sortOptions: {
+          type: Array,
+          value: []
+        }
+      },
+
+      attached: function() {
+        this.sortOptions = [
+          {field: 'dc:title', label: this.i18n('searchResults.sort.field.title'), order: 'asc'},
+          {field: 'dc:created', label: this.i18n('searchResults.sort.field.created'), order: 'asc', selected: true},
+          {field: 'dc:modified', label: this.i18n('searchResults.sort.field.modified'), order: 'desc'},
+          {field: 'dc:lastContributor', label: this.i18n('searchResults.sort.field.lastContributor'), order: 'asc'},
+          {field: 'state', label: this.i18n('searchResults.sort.field.state'), order: 'asc'},
+        ];
+      },
+
+      _navigate: function(e) {
+        this.fire('navigate', { doc: (e.model || e.detail).item, index: (e.model || e.detail).index });
+      }
+    });
+
+
+
+
+
+    </script>
+</dom-module>

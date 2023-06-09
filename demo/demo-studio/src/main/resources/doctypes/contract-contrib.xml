@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.doctypes.contract" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.core.schema.TypeService" point="doctype">
+        <doctype name="Contract" extends="File">
+            <schema name="contract"/>
+            <facet name="Orderable"/>
+        </doctype>
+        <doctype name="Portfolio" append="true">
+            <subtypes>
+                <type>Contract</type>
+            </subtypes>
+        </doctype>
+    </extension>
+
+    <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
+        <type id="Contract">
+            <label>Contract</label>
+            <icon>/img/bigCorpContract16.png</icon>
+            <bigIcon>/img/bigCorpContract32.png</bigIcon>
+            <description></description>
+        </type>
+    </extension>
+
+    <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService" point="types">
+        <types>
+            <type name="Contract">demo_lf</type>
+        </types>
+    </extension>
+</component>

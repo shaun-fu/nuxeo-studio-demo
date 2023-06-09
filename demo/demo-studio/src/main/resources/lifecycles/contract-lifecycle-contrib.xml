@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.lifecycles.contract" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService" point="lifecycle">
+        <lifecycle name="demo_lf" defaultInitial="draft">
+            <transitions>
+                <transition name="to_pending" destinationState="pending">
+                    <description></description>
+                </transition>
+                <transition name="to_approved" destinationState="approved">
+                    <description></description>
+                </transition>
+                <transition name="to_cancelled" destinationState="cancelled">
+                    <description></description>
+                </transition>
+            </transitions>
+            <states>
+                <state name="draft" description="Default state" initial="true">
+                    <transitions>
+                        <transition>to_pending</transition>
+                    </transitions>
+                </state>9
+                <state name="pending" description="Pending for approval">
+                    <transitions>
+                        <transition>to_approved</transition>
+                        <transition>to_cancelled</transition>
+                    </transitions>
+                </state>
+                <state name="approved" description="Approved">
+                    <transitions>
+                    </transitions>
+                </state>
+                <state name="cancelled" description="Cancelled">
+                    <transitions/>
+                </state>
+            </states>
+        </lifecycle>
+    </extension>
+
+</component>

@@ -1,0 +1,49 @@
+<dom-module id="nuxeo-contract-metadata-layout">
+    <template>
+        <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+        <div role="widget">
+            <label>[[i18n(&#x27;label.dublincore.title&#x27;)]]</label>
+            <div name="title">[[document.properties.dc:title]]</div>
+        </div>
+
+        <div role="widget">
+            <label>[[i18n(&#x27;label.dublincore.description&#x27;)]]</label>
+            <div name="description" class="multiline">[[document.properties.dc:description]]</div>
+        </div>
+
+        <nuxeo-user-suggestion label="[[i18n(&#x27;label.owner&#x27;)]]" value="[[document.properties.ct:owner]]" readonly="true" search-type="USER_TYPE"></nuxeo-user-suggestion>
+
+        <nuxeo-directory-suggestion role="widget" role="widget" label="[[i18n(&#x27;label.contractType&#x27;)]]" directory-name="contractType" name="contractType" value="{{document.properties.ct:type}}" readonly></nuxeo-directory-suggestion>
+
+        <div role="widget">
+            <label>[[i18n(&#x27;label.signatureDate&#x27;)]]</label>
+            <nuxeo-date name="signatureDate" datetime="[[document.properties.ct:signatureDate]]"></nuxeo-date>
+        </div>
+        <div role="widget">
+            <label>[[i18n(&#x27;label.startDate&#x27;)]]</label>
+            <nuxeo-date name="startDate" datetime="[[document.properties.ct:startDate]]"></nuxeo-date>
+        </div>
+        <div role="widget">
+            <label>[[i18n(&#x27;label.expirationDate&#x27;)]]</label>
+            <nuxeo-date name="expirationDate" datetime="[[document.properties.ct:expirationDate]]"></nuxeo-date>
+        </div>
+
+    </template>
+
+    <script>
+    Polymer({
+      is: 'nuxeo-contract-metadata-layout',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+        document: {
+          type: Object,
+        },
+
+      }
+    });
+  </script>
+</dom-module>

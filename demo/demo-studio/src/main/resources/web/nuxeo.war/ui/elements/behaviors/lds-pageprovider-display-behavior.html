@@ -1,0 +1,199 @@
+<script>
+  /* eslint-disable no-var, no-use-before-define */
+  var Nuxeo = Nuxeo || {};
+  (() => {
+
+    /**
+    * @polymerBehavior Nuxeo.LDSPageProviderDisplayBehavior
+    */
+    Nuxeo.LDSPageProviderDisplayBehavior = [Nuxeo.PageProviderDisplayBehavior, {
+      /**
+       * Fetch a range of items (and fill the items array accordingly)
+       *
+       * @param firstIndex First index to fetch
+       * @param lastIndex Last index to fetch
+       * @param clear Clear items array
+       */
+      _fetchRange(firstIndex, lastIndex, clear) {
+        if (this._hasPageProvider()) {
+
+          if (firstIndex === 0) {
+            lastIndex = this._pageSize - 1;
+          }
+
+          if (this.maxItems && lastIndex > this.maxItems) {
+            lastIndex = this.maxItems;
+            clear = true;
+          } else if (firstIndex > 0) {
+            lastIndex += this._fetchAheadLimit;
+            if (this.maxItems) {
+              lastIndex = Math.min(lastIndex, this.maxItems - 1);
+            }
+          }
+
+          if (!clear && this.items && this.items.length) {
+            const shouldLoad = this.items.slice(firstIndex, lastIndex).some((el, idx) => {
+              if (!el || (Object.keys(el).length === 0 && el.constructor === Object)) {
+                firstIndex += idx;
+                return true;
+              }
+              return false;
+            });
+            if (!shouldLoad) {
+              return;
+            }
+          }
+
+          // update items array based on first and last visible indexes
+          this.nxProvider.offset = firstIndex;
+          this.nxProvider.page = 1;
+          this.nxProvider.pageSize = (lastIndex - firstIndex) + 1;
+          const options = {
+            skipAggregates: firstIndex !== 0,
+          };
+          return this.nxProvider.fetch(options).then((response) => {
+            if (!response) {
+              return;
+            }
+
+            // get results count, and reset the array if it differs from current array length
+            let count;
+            if (response.resultsCount < 0) {
+              // negative resultCount means unknown value, fall back on currentPageSize
+              count = response.resultsCountLimit > 0 ? response.resultsCountLimit : response.currentPageSize;
+            } else if (response.resultsCountLimit > 0 && response.resultsCountLimit < response.resultsCount) {
+              count = response.resultsCountLimit;
+            } else {
+              count = response.resultsCount;
+            }
+            if (this.maxItems) {
+              if (count > this.maxItems) {
+                count = this.maxItems;
+              }
+            }
+            if (clear || this.items.length !== count) {
+              this.reset(count);
+            }
+
+            // fill items range based on response
+            let entryIndex = 0;
+            // if pageSize is 0, set all items
+            if (this._pageSize == 0) {
+              for (let i = firstIndex; i <= response.resultsCount; i++) {
+                if (entryIndex < response.entries.length) {
+                  const isSelected = this._isSelected(this.items[i]);
+
+                  this.set(`items.${i}`, response.entries[entryIndex++]);
+
+                  if (isSelected) {
+                    this.selectIndex(i);
+                  }
+                }
+              }
+            } else {
+              for (let i = firstIndex; i <= lastIndex; i++) {
+                if (entryIndex < response.entries.length) {
+                  const isSelected = this._isSelected(this.items[i]);
+
+                  this.set(`items.${i}`, response.entries[entryIndex++]);
+
+                  if (isSelected) {
+                    this.selectIndex(i);
+                  }
+                }
+              }
+            }
+
+
+            // quick filters
+            this.quickFilters = this.nxProvider.quickFilters;
+
+            // check if there is any active quick filter
+            const hasActiveQuickFilters = this.quickFilters ?
+              Object.keys(this.quickFilters).some((k) => this.quickFilters[k].active) : false;
+
+            // update buckets array based on provider's sort property
+            let buckets = [];
+            if (response.aggregations && !hasActiveQuickFilters) {
+              const providerSort = this.nxProvider.sort;
+              if (providerSort && Object.keys(providerSort).length === 1) {
+                const providerField = Object.keys(providerSort)[0];
+                const providerOrder = providerSort[providerField];
+                Object.keys(response.aggregations).forEach((key) => {
+                  const aggregation = response.aggregations[key];
+                  if (aggregation.field === providerField && aggregation.buckets.length >= buckets.length &&
+                    aggregation.properties && aggregation.properties.order) {
+                    const order = aggregation.properties.order.split(' ');
+                    if (order.length > 0 && order[0] === 'key') {
+                      buckets = aggregation.buckets;
+                    }
+                    if (order.length > 1 && order[1] !== providerOrder) {
+                      buckets.reverse();
+                    }
+                  }
+                });
+              }
+              this.set('buckets', buckets);
+            }
+
+            this.fire('nuxeo-page-loaded');
+
+          });
+        }
+        return Promise.resolve();
+      },
+
+      _onColumnFilterChanged(e) {
+        if (this._hasPageProvider()) {
+          let notFound = true;
+          for (let i = 0; i < this.filters.length; i++) {
+            if (this.filters[i].path === e.detail.filterBy) {
+              if (e.detail.value.length === 0) {
+                this.splice('filters', i, 1);
+              } else {
+                this.set(`filters.${i}.value`, e.detail.value);
+              }
+              notFound = false;
+              break;
+            }
+          }
+
+          if (notFound && e.detail.value.length !== 0) {
+            this.push('filters', {
+              path: e.detail.filterBy,
+              value: e.detail.value,
+              name: e.detail.name,
+              expression: e.detail.filterExpression,
+            });
+          }
+
+          if (this.paginable) {
+            this.nxProvider.page = 1;
+          }
+
+          if (this.nxProvider.params[e.detail.filterBy] && e.detail.value.length === 0) {
+            delete this.nxProvider.params[e.detail.filterBy];
+            this._pageSize = 40;
+            this.fetch().then(() => {
+              this.fire('filters-changed');
+            });
+          } else if (e.detail.value.length > 0) {
+            if (e.detail.filterExpression) {
+              this.nxProvider.params[e.detail.filterBy] = e.detail.filterExpression.replace(/(\$term)/g, e.detail.value);
+            } else if (e.detail.filterBy === 'title' || e.detail.filterBy === 'ecm_fulltext') {
+              // Keeping the verification above for compatibility purposes (ELEMENTS-961)
+              this.nxProvider.params[e.detail.filterBy] = `${e.detail.value}*`;
+            } else {
+              this.nxProvider.params[e.detail.filterBy] = e.detail.value;
+            }
+            this._pageSize = 40;
+            this.fetch().then(() => {
+              this.fire('filters-changed');
+            });
+          }
+        }
+      },
+
+    }];
+  })();
+</script>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<component name="com.iss.demomgmt.listener.listener.contractcanceled">
+
+  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+    <listener name="contractcanceled"
+      class="com.iss.demomgmt.listener.ContractCanceled">
+        <event>workflowCanceled</event>
+    </listener>
+  </extension>
+
+</component>

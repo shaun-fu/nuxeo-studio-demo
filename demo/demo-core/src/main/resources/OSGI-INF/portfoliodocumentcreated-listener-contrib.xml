@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<component name="com.iss.demomgmt.listener.listener.portfoliodocumentcreated">
+
+  <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+    <listener async="true" postCommit="true" name="portfoliodocumentcreated"
+      class="com.iss.demomgmt.listener.PortfolioDocumentCreated">
+        <event>documentCreated</event>
+    </listener>
+  </extension>
+
+</component>

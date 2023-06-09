@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.usergroups" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.directory.GenericDirectory" point="directories">
+        <directory name="userDirectory" extends="template-user">
+            <passwordField>password</passwordField>
+            <dataFile>usergroups/users.csv</dataFile>
+            <idField>username</idField>
+            <schema>user</schema>
+            <passwordHashAlgorithm>SSHA</passwordHashAlgorithm>
+            <autoincrementIdField>false</autoincrementIdField>
+            <querySizeLimit>50</querySizeLimit>
+            <types>
+                <type>system</type>
+            </types>
+            <cacheEntryName>user-entry-cache</cacheEntryName>
+            <cacheEntryWithoutReferencesName>user-entry-cache-without-references</cacheEntryWithoutReferencesName>
+            <references>
+                <inverseReference field="groups" directory="groupDirectory" dualReferenceField="members"/>
+                <inverseReference field="departments" directory="kms_department" dualReferenceField="users"/>
+            </references>
+            <createTablePolicy>on_missing_columns</createTablePolicy>
+        </directory>
+        <directory name="groupDirectory" extends="template-group">
+            <dataFile>usergroups/groups.csv</dataFile>
+            <idField>groupname</idField>
+            <schema>group</schema>
+            <autoincrementIdField>false</autoincrementIdField>
+            <querySizeLimit>50</querySizeLimit>
+            <types>
+                <type>system</type>
+            </types>
+            <cacheEntryName>group-entry-cache</cacheEntryName>
+            <cacheEntryWithoutReferencesName>group-entry-cache-without-references</cacheEntryWithoutReferencesName>
+            <references>
+                <reference field="members" directory="userDirectory" name="user2group" source="groupId" target="userId" dataFile="usergroups/user2group.csv"/>
+                <reference field="subGroups" directory="groupDirectory" name="group2group" source="parentGroupId" target="childGroupId"/>
+                <inverseReference field="parentGroups" directory="groupDirectory" dualReferenceField="subGroups"/>
+            </references>
+            <createTablePolicy>on_missing_columns</createTablePolicy>
+        </directory>
+    </extension>
+
+
+</component>

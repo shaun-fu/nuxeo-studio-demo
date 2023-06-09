@@ -1,0 +1,45 @@
+<!--
+`iss-ziptree-export`
+@group Nuxeo UI
+@element iss-ziptree-export
+-->
+<dom-module id="iss-ziptree-export">
+  <template>
+    <style include="nuxeo-action-button-styles iron-flex iron-flex-alignment iron-flex-factors nuxeo-styles">
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+    <div class="action">
+      <img style="margin-left: 10px;" src="/nuxeo/icons/export.png" alt="" class="smallIcon">
+      <a style="margin-left: 10px;" href="{{url}}" target="_blank">[[i18n('documentAction.exportZIP')]]</a>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'iss-ziptree-export',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+        document: {
+          type: Object
+        },
+        label: {
+          type: String
+        },
+      },
+      observers: ['_inputChanged(document)'],
+      _inputChanged: function (document) {
+        var location = window.location.href;
+        var index = location.indexOf('/nuxeo/ui');
+        if (index > 0 && this.document) {
+          var host = location.substring(0, index);
+          this.url = host + "/nuxeo/api/v1/id/" + this.document.uid + "/@rendition/zipTreeExport";
+        }
+      },
+
+    });
+
+
+  </script>
+</dom-module>

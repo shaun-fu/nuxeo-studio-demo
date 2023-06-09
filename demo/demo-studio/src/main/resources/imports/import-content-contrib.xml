@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<component name="demo.studio.content" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.showcase.content" point="contents">
+        <content name="demo-studio-content">
+            <filename>imports/demo-studio-import-content.zip</filename>
+        </content>
+    </extension>
+</component>

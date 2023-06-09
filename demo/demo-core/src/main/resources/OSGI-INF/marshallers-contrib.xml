@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<component name="com.iss.demomgmt.usermanager.marshallers" version="1.0.0">
+  <require>org.nuxeo.ecm.platform.usermanager.marshallers</require>
+  <extension target="org.nuxeo.ecm.core.io.MarshallerRegistry" point="marshallers">
+    <register class="org.nuxeo.ecm.platform.usermanager.io.NuxeoPrincipalJsonWriter" enable="false" />
+    <register class="com.iss.demomgmt.io.NuxeoPrincipalJsonWriter" enable="true" />
+  </extension>
+</component>

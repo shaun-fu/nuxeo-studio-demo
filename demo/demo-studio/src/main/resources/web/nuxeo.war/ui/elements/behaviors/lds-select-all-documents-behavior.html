@@ -1,0 +1,117 @@
+<script>
+  /* eslint-disable no-var, no-use-before-define */
+  var Nuxeo = Nuxeo || {};
+  (() => {
+
+    /**
+    * @polymerBehavior Nuxeo.LDSSelectAllDocsBehavior
+    */
+    Nuxeo.LDSSelectAllDocsBehavior = {
+      properties: {
+        isBinding: {
+          type: Boolean,
+          value: false
+        },
+
+        loading: {
+          type: Boolean,
+          reflectToAttribute: true,
+          value: false
+        },
+
+      },
+
+      listeners: {
+        'filters-changed': '_filtersChanged',
+        'clear-selected-items': '_clearSelection',
+        'checkbox-clicked': '_checkboxClicked'
+      },
+
+      get table() {
+        return this.$$('lds-data-table');
+      },
+
+      _filtersChanged: function () {
+        // when column filters changed, clear selection, reset pageSize
+        this._clearSelection();
+        this.pageSize = 40;
+      },
+
+      // override
+      _refresh: function () {
+        if (this.document && this.visible && this.results) {
+          this.results.fetch().then(() => {
+            this._clearSelection();
+          });
+        }
+      },
+
+      _clearSelection: function () {
+        var checkmark = this.$$('nuxeo-data-table-checkbox').shadowRoot.querySelector('nuxeo-checkmark');
+        checkmark.checked = false;
+      },
+
+      _setSelection: function () {
+        var checkmark = this.$$('nuxeo-data-table-checkbox').shadowRoot.querySelector('nuxeo-checkmark');
+        checkmark.checked = true;
+      },
+
+      resultsCountChanged: function (e) {
+        // if is proxy, no need to display selectAll button
+        if (this.isProxy && this.isProxy == 1) return;
+        // if result count greater than 0 and is loading first time, show selectAll button
+        var resultsCount = e.detail.value;
+        if (resultsCount > 0 && !this.isBinding) {
+          this.isBinding = true;
+
+          // remove header attribute to display selectAll button
+          var checkbox = this.$$('nuxeo-data-table-checkbox');
+          checkbox.removeAttribute('header');
+          
+          // binding click event to selectAll button          
+          var checkmark = checkbox.shadowRoot.querySelector('nuxeo-checkmark');
+          checkbox.onclick = function () {
+            var checked = checkmark.checked;
+            if (checked) {
+              this.loading = true;
+              // wait a moment for loading
+              this.debounce('loading', function () {
+                // if already loaded all items, select all visible items
+                if (resultsCount <= this.pageSize || this.pageSize == 0) {
+                  this.table.selectAll();
+                  this.loading = false;
+                  return;
+                }
+                // set pageSize to 0 to load all items
+                this.pageSize = 0;
+                this.table._nxProviderChanged(this.nxProvider);
+                this.$.results.view.reset();
+                this.table.fetch().then(() => {
+                  this.table.selectAll();
+                  this.loading = false;
+                });
+              }, 10);
+            } else {
+              // clear all selections
+              this.table.clearSelection();
+            }
+          }.bind(this);
+        }
+      },
+
+      _checkboxClicked: function (e) {
+        // if deselect all items, clear selection
+        if (this.table.selectedItems.length == 0) {
+          this._clearSelection();
+        }
+        // if select all items, set selection to true
+        if (this.table.selectedItems.length == this.table.items.length) {
+          this._setSelection();
+        }
+      },
+
+
+
+    };
+  })();
+</script>

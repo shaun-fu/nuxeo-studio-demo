@@ -1,0 +1,6 @@
+"id","label","obsolete","ordering"
+"User","知识使用者组","0","1"
+"Supervisor","知识主管组","0","2"
+"Manager","知识经理组","0","3"
+"Jury","知识评审团","0","4"
+"Admin","知识管理员组","0","5"

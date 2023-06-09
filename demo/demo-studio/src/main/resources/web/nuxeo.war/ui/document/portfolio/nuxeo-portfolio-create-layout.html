@@ -1,0 +1,99 @@
+<link rel="import" href="../../elements/iss-directory-suggestion.html">
+<dom-module id="nuxeo-portfolio-create-layout">
+    <template>
+        <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+    </style>
+        <nuxeo-connection user="{{_currentUser}}"></nuxeo-connection>
+
+        <nuxeo-input role="widget" role="widget" label="[[i18n(&#x27;title&#x27;)]]" name="title"
+                     value="{{document.properties.dc:title}}" autofocus="" required=""></nuxeo-input>
+
+        <nuxeo-input role="widget" role="widget" label="[[i18n(&#x27;Company Name&#x27;)]]" name="Company Name"
+                     value="{{document.properties.pt:companyName}}"></nuxeo-input>
+
+        <nuxeo-textarea role="widget" role="widget" label="[[i18n(&#x27;label.description&#x27;)]]" name="description"
+                        value="{{document.properties.dc:description}}"></nuxeo-textarea>
+
+        <iss-directory-suggestion role="widget" label="Department" name="department" required can-select-parent=""
+                                  directory-name="kms_department" value="{{document.properties.pt:department}}" min-chars="0"
+                                  show-children-only>
+        </iss-directory-suggestion>
+
+        <nuxeo-user-suggestion role="widget" id="picker" name="group" search-type="GROUP_TYPE" label="Admin Group"
+                               placeholder="[[i18n('editUser.searchGroups')]]" value="{{document.properties.pt:adminGroup}}"
+                               result-formatter="[[resultFormatter]]" min-chars="0" required query-results-filter="[[queryResultsFilter]]">
+        </nuxeo-user-suggestion>
+
+        <nuxeo-directory-suggestion role="widget" role="widget" label="[[i18n(&#x27;label.dublincore.nature&#x27;)]]"
+                                    name="nature" directory-name="nature" value="{{document.properties.dc:nature}}"
+                                    placeholder="[[i18n(&#x27;dublincoreEdit.directorySuggestion.placeholder&#x27;)]]" min-chars="0">
+        </nuxeo-directory-suggestion>
+
+        <nuxeo-directory-suggestion role="widget" role="widget" label="[[i18n(&#x27;label.dublincore.subjects&#x27;)]]"
+                                    directory-name="l10nsubjects" name="subjects" value="{{document.properties.dc:subjects}}" multiple="true"
+                                    dbl10n="true" placeholder="[[i18n(&#x27;dublincoreEdit.directorySuggestion.placeholder&#x27;)]]" min-chars="0">
+        </nuxeo-directory-suggestion>
+
+        <nuxeo-directory-suggestion role="widget" role="widget" label="[[i18n(&#x27;label.dublincore.coverage&#x27;)]]"
+                                    directory-name="l10ncoverage" name="coverage" value="{{document.properties.dc:coverage}}" dbl10n="true"
+                                    placeholder="[[i18n(&#x27;dublincoreEdit.directorySuggestion.placeholder&#x27;)]]" min-chars="0">
+        </nuxeo-directory-suggestion>
+
+        <nuxeo-date-picker role="widget" role="widget" label="[[i18n(&#x27;label.dublincore.expire&#x27;)]]" name="expired"
+                           value="{{document.properties.dc:expired}}"></nuxeo-date-picker>
+
+    </template>
+
+    <script>
+    Polymer({
+      is: 'nuxeo-portfolio-create-layout',
+      behaviors: [Nuxeo.LayoutBehavior, Nuxeo.FiltersBehavior],
+      properties: {
+
+        document: {
+          type: Object,
+        },
+
+        _currentUser: {
+          type: Object,
+        },
+
+        resultFormatter: {
+          type: Function,
+          value: function () {
+            return this._resultFormatter.bind(this);
+          }
+        },
+
+        queryResultsFilter: {
+          type: Function,
+          value: function () {
+            return this._queryResultsFilter.bind(this);
+          }
+        },
+
+      },
+
+      _resultFormatter: function (item) {
+        return item.displayLabel + ' (' + (item.groupname || item.username) + ')';
+      },
+
+      _queryResultsFilter: function (e) {
+        if (!this.isMember(this._currentUser, "administrators")) {
+          // only show children department's admin group
+          if (e.department && this.document && this.document.properties && this.document.properties['pt:department']) {
+            return e.department == this.document.properties['pt:department'] && e.groupType == "Admin";
+          }
+        } else {
+          return true;
+        }
+      }
+
+
+
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.bundle" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.platform.WebResources" point="resources">
+        <resource name="nuxeo-studio-bundle.html" type="import" shrinkable="false">
+            <uri>/ui/nuxeo-studio-bundle.html</uri>
+        </resource>
+    </extension>
+    <extension target="org.nuxeo.ecm.platform.WebResources" point="bundles">
+        <bundle name="web-ui">
+            <resources append="true">
+                <resource>nuxeo-studio-bundle.html</resource>
+            </resources>
+        </bundle>
+    </extension>
+</component>
+
+

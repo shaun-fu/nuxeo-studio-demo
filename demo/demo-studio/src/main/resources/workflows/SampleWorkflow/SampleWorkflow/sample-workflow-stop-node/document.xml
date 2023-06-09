@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document repository="default" id="sample-workflow-stop-node">
+    <system>
+        <type>RouteNode</type>
+        <path>SampleWorkflow/sample-workflow-stop-node</path>
+        <lifecycle-state>validated</lifecycle-state>
+        <lifecycle-policy>documentRouteElement</lifecycle-policy>
+        <access-control/>
+    </system>
+    <schema xmlns:sample-workflow-stop-node="http://www.nuxeo.org/ecm/project/schemas/demo-studio/sample-workflow-stop-node"
+            name="sample-workflow-stop-node"></schema>
+    <schema xmlns:common="http://www.nuxeo.org/ecm/schemas/common/" name="common"></schema>
+    <schema xmlns:dc="http://www.nuxeo.org/ecm/schemas/dublincore/" name="dublincore">
+        <dc:title><![CDATA[workflow.sample.stop.title]]></dc:title>
+    </schema>
+    <schema xmlns:rnode="http://www.nuxeo.org/ecm/schemas/route_node/" name="route_node">
+        <rnode:transitions/>
+        <rnode:taskY><![CDATA[360]]></rnode:taskY>
+        <rnode:taskX><![CDATA[200]]></rnode:taskX>
+        <rnode:inputChain><![CDATA[]]></rnode:inputChain>
+        <rnode:executeOnlyFirstTransition><![CDATA[false]]></rnode:executeOnlyFirstTransition>
+        <rnode:stop><![CDATA[true]]></rnode:stop>
+        <rnode:hasTask><![CDATA[false]]></rnode:hasTask>
+        <rnode:escalationRules/>
+        <rnode:outputChain><![CDATA[]]></rnode:outputChain>
+        <rnode:nodeId><![CDATA[sample-workflow-stop-node]]></rnode:nodeId>
+        <rnode:start><![CDATA[false]]></rnode:start>
+    </schema>
+</document>

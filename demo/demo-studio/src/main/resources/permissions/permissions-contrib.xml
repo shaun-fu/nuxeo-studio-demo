@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.permissions" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.core.security.SecurityService" point="permissions">
+        <!-- Override the default Write permission to remove Remove permission -->
+        <permission name="Write">
+            <remove>Remove</remove>
+        </permission>
+        <!-- Define a new global permission to read, edit and remove content -->
+        <permission name="ReadWriteAndRemove">
+            <include>Read</include>
+            <include>Write</include>
+            <include>Remove</include>
+        </permission>
+    </extension>
+
+    <!-- Make permissions visible in the drop down list in the UI -->
+    <extension target="org.nuxeo.ecm.core.security.SecurityService" point="permissionsVisibility">
+        <visibility>
+            <item order="10" show="true">Read</item>
+            <item denyPermission="Write" order="50" show="true">ReadWrite</item>
+            <item denyPermission="Write" order="55" show="true">ReadWriteAndRemove</item>
+            <item denyPermission="Remove" order="60" show="true">ReadRemove</item>
+            <item order="100" show="true">Everything</item>
+        </visibility>
+    </extension>
+</component>

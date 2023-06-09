@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.page.provider.contract.search" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.platform.query.api.PageProviderService" point="providers">
+        <genericPageProvider class="org.nuxeo.elasticsearch.provider.ElasticSearchNxqlPageProvider"
+                             name="contract-search">
+            <trackUsage>true</trackUsage>
+            <property name="coreSession">#{documentManager}</property>
+            <whereClause>
+                <fixedPart>ecm:mixinType != 'HiddenInNavigation' AND ecm:isVersion = 0 AND ecm:isTrashed = 0 AND
+                    ecm:isProxy = 0 AND ecm:primaryType IN
+                    ('Contract')
+                </fixedPart>
+                <predicate parameter="ecm:fulltext" operator="FULLTEXT"
+                           hint="ES: INDEX(all_field) OPERATOR(match_phrase_prefix)">
+                    <field schema="contract-search-pp" name="system_fulltext"/>
+                </predicate>
+            </whereClause>
+            <searchDocumentType>contract-search</searchDocumentType>
+            <aggregates>
+                <aggregate id="contract_type_agg" type="terms" parameter="ct:type">
+                    <field schema="contract-search-pp" name="contract_type_agg"/>
+                    <properties>
+                        <property name="order">count desc</property>
+                        <property name="size">20</property>
+                    </properties>
+                </aggregate>
+                <aggregate id="dublincore_creator_agg" type="terms" parameter="dc:creator">
+                    <field schema="contract-search-pp" name="dublincore_creator_agg"/>
+                    <properties>
+                        <property name="order">count desc</property>
+                        <property name="size">20</property>
+                    </properties>
+                </aggregate>
+            </aggregates>
+            <sort column="dc:modified" ascending="false"/>
+            <pageSize>15</pageSize>
+        </genericPageProvider>
+    </extension>
+</component>

@@ -1,0 +1,64 @@
+<dom-module id="nuxeo-contract-search-search-form">
+    <template>
+        <style>
+      *[role=widget] {
+        padding: 5px;
+      }
+        </style>
+        <nuxeo-page-provider id="nxProvider" headers="[[headers]]" enrichers="[[enrichers]]" schemas="[[schemas]]">
+        </nuxeo-page-provider>
+
+        <nuxeo-input value="{{params.system_fulltext}}" label="[[i18n('label.doctype.contract.search')]]" type="text"
+                     role="widget"></nuxeo-input>
+
+        <div role="widget">
+            <label class="label">[[i18n('label.doctype.contract.type')]]</label>
+            <nuxeo-dropdown-aggregation
+                    data="[[aggregations.contract_type_agg]]"
+                    value="{{params.contract_type_agg}}"
+                    multiple
+            >
+            </nuxeo-dropdown-aggregation>
+        </div>
+
+        <div role="widget">
+            <label class="label">[[i18n('label.doctype.contract.creator')]]</label>
+            <nuxeo-dropdown-aggregation
+                    data="[[aggregations.dublincore_creator_agg]]"
+                    value="{{params.dublincore_creator_agg}}"
+                    multiple
+            >
+            </nuxeo-dropdown-aggregation>
+        </div>
+
+    </template>
+
+    <script>
+    Polymer({
+      is: 'nuxeo-contract-search-search-form',
+      behaviors: [Nuxeo.LayoutBehavior],
+      properties: {
+
+        /**
+         * @search kms_search_knowledge
+         */
+        params: {
+          type: Object,
+          value: {},
+          notify: true,
+        },
+
+        aggregations: {
+          type: Object,
+          value: {},
+          notify: true,
+        },
+
+      },
+
+
+    });
+
+
+    </script>
+</dom-module>

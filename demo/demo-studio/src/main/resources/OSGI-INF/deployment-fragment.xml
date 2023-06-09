@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<fragment version="1">
+    <require>all</require>
+    <install>
+        <!-- unzip the war template -->
+        <unzip from="${bundle.fileName}" to="/" prefix="web">
+            <include>web/nuxeo.war/**</include>
+            <exclude>web/nuxeo.war/ui/i18n/**</exclude>
+        </unzip>
+
+        <!-- create a temporary folder -->
+        <delete path="${bundle.fileName}.tmp"/>
+        <mkdir path="${bundle.fileName}.tmp"/>
+        <unzip from="${bundle.fileName}" to="${bundle.fileName}.tmp"/>
+
+        <!-- append the translations -->
+        <append from="${bundle.fileName}.tmp/web/nuxeo.war/ui/i18n/messages.json"
+                to="nuxeo.war/ui/i18n/messages.json" addNewLine="true"/>
+        <append from="${bundle.fileName}.tmp/web/nuxeo.war/ui/i18n/messages.properties"
+                to="nuxeo.war/WEB-INF/classes/messages_en.properties" addNewLine="true"/>
+        <append from="${bundle.fileName}.tmp/web/nuxeo.war/ui/i18n/messages-zh-CN.json"
+                to="nuxeo.war/ui/i18n/messages-zh-CN.json" addNewLine="true"/>
+        <append from="${bundle.fileName}.tmp/web/nuxeo.war/ui/i18n/messages-zh-CN.properties"
+                to="nuxeo.war/WEB-INF/classes/messages_zh_CN.properties" addNewLine="true"/>
+
+        <delete path="${bundle.fileName}.tmp"/>
+
+        <!--    <unzip from="${bundle.fileName}" to="/" prefix="web">-->
+        <!--      <include>web/nuxeo.war/**</include>-->
+        <!--    </unzip>-->
+        <!--    <unzip from="${bundle.fileName}" to="/">-->
+        <!--      <include>lib/**</include>-->
+        <!--    </unzip>-->
+    </install>
+</fragment>

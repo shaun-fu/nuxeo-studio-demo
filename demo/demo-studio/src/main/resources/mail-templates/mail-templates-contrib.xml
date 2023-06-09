@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.mail.templates" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.platform.ec.notification.service.NotificationService" point="templates">
+        <template name="contract-approved" src="mail-templates/templates/contract-approved.ftl"/>
+    </extension>
+</component>

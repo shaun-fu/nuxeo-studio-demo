@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.default.user.group.schema" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.core.schema.TypeService" point="schema">
+        <schema name="user" override="true" src="usergroups/schemas/demo-user.xsd"/>
+        <schema name="group" override="true" src="usergroups/schemas/demo-group.xsd"/>
+        <schema name="kmsxvocabulary" src="usergroups/schemas/demo-kmsxvocabulary.xsd"/>
+    </extension>
+</component>

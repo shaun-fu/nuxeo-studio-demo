@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.workflow.sample.schemas" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.ecm.core.schema.TypeService" point="schema">
+        <schema name="sample-workflow" prefix="sample-workflow" override="true"
+                src="workflows/SampleWorkflow/schemas/sample-workflow.xsd"/>
+        <schema name="sample-workflow-review-task" prefix="sample-workflow-review-task" override="true"
+                src="workflows/SampleWorkflow/schemas/sample-workflow-review-task.xsd"/>
+        <schema name="sample-workflow-final-review-task" prefix="sample-workflow-final-review-task" override="true"
+                src="workflows/SampleWorkflow/schemas/sample-workflow-final-review-task.xsd"/>
+        <schema name="global-sample-workflow-review-task" prefix="global-sample-workflow-review-task" override="true"
+                src="workflows/SampleWorkflow/schemas/global-sample-workflow-review-task.xsd"/>
+        <schema name="global-sample-workflow-final-review-task" prefix="global-sample-workflow-final-review-task"
+                override="true"
+                src="workflows/SampleWorkflow/schemas/global-sample-workflow-final-review-task.xsd"/>
+    </extension>
+</component>

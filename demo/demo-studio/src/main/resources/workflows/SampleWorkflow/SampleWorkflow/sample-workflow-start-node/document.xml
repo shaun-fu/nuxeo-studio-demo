@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document repository="default" id="sample-workflow-start-node">
+    <system>
+        <type>RouteNode</type>
+        <path>SampleWorkflow/sample-workflow-start-node</path>
+        <lifecycle-state>validated</lifecycle-state>
+        <lifecycle-policy>documentRouteElement</lifecycle-policy>
+        <access-control/>
+    </system>
+    <schema xmlns:common="http://www.nuxeo.org/ecm/schemas/common/" name="common"></schema>
+    <schema xmlns:sample-workflow-start-node="http://www.nuxeo.org/ecm/project/schemas/demo-studio/sample-workflow-start-node"
+            name="sample-workflow-start-node"></schema>
+    <schema xmlns:dc="http://www.nuxeo.org/ecm/schemas/dublincore/" name="dublincore">
+        <dc:title><![CDATA[workflow.sample.start.title]]></dc:title>
+    </schema>
+    <schema xmlns:rnode="http://www.nuxeo.org/ecm/schemas/route_node/" name="route_node">
+        <rnode:transitions>
+            <transition>
+                <condition><![CDATA[true]]></condition>
+                <chain><![CDATA[ch_contract_submitted]]></chain>
+                <targetId><![CDATA[sample-workflow-review-task]]></targetId>
+                <name><![CDATA[auto_transition_sample-workflow-start-node]]></name>
+                <label><![CDATA[auto_transition]]></label>
+            </transition>
+        </rnode:transitions>
+        <rnode:taskY><![CDATA[0]]></rnode:taskY>
+        <rnode:taskX><![CDATA[200]]></rnode:taskX>
+        <rnode:inputChain><![CDATA[]]></rnode:inputChain>
+        <rnode:executeOnlyFirstTransition><![CDATA[false]]></rnode:executeOnlyFirstTransition>
+        <rnode:stop><![CDATA[false]]></rnode:stop>
+        <rnode:hasTask><![CDATA[false]]></rnode:hasTask>
+        <rnode:escalationRules/>
+        <rnode:outputChain><![CDATA[]]></rnode:outputChain>
+        <rnode:nodeId><![CDATA[sample-workflow-start-node]]></rnode:nodeId>
+        <rnode:start><![CDATA[true]]></rnode:start>
+    </schema>
+</document>

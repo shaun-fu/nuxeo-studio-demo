@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="demo.studio.themes" version="1.0.0">
+    <require>org.nuxeo.runtime.started</require>
+    <extension target="org.nuxeo.theme.styling.service" point="flavors">
+        <flavor name="branding" extends="default">
+            <logo>
+                <path>/img/ikms.png</path>
+                <previewPath>/img/ikms.png</previewPath>
+                <width>200px</width>
+                <height>45px</height>
+                <title>iSoftStone</title>
+            </logo>
+            <palettePreview>
+                <colors>
+                    <color>#00aded</color>
+                    <color>#00aded</color>
+                    <color>#00aded</color>
+                    <color>#687b93</color>
+                    <color>#060826</color>
+                    <color>#0090ff</color>
+                    <color>#eee</color>
+                    <color>#f3f6f9</color>
+                    <color>#2b333e</color>
+                </colors>
+            </palettePreview>
+            <sass append="true">
+                <import src="themes/palettes/common_variables.scss"/>
+                <import src="themes/palettes/branding_variables.scss"/>
+            </sass>
+        </flavor>
+    </extension>
+    <extension target="org.nuxeo.theme.styling.service" point="pages">
+        <page name="galaxy/popup">
+            <defaultFlavor>branding</defaultFlavor>
+        </page>
+        <page name="galaxy/print">
+            <defaultFlavor>branding</defaultFlavor>
+        </page>
+        <page name="admin/default">
+            <defaultFlavor>branding</defaultFlavor>
+        </page>
+        <page name="userCenter/default">
+            <defaultFlavor>branding</defaultFlavor>
+        </page>
+        <page name="search/default">
+            <defaultFlavor>branding</defaultFlavor>
+        </page>
+        <page name="dam/default">
+            <defaultFlavor>branding</defaultFlavor>
+        </page>
+        <page name="galaxy/default">
+            <flavors append="true"/>
+            <defaultFlavor>branding</defaultFlavor>
+        </page>
+    </extension>
+</component>
